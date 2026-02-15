@@ -171,6 +171,11 @@ function detectMode(message) {
 }
 
 /* ================= ROUTES ================= */
+// Root route (for Render health check)
+app.get("/", (req, res) => {
+  res.send("🚀 Almas AI Backend is Live on Render!");
+});
+
 
 // Get all chats
 app.get("/api/chats", async (req, res) => {
