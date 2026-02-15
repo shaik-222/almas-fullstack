@@ -492,6 +492,11 @@ async function send() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ chatId: currentChat, message: text })
     });
+    
+if (!res.ok) {
+  const errorText = await res.text();
+  throw new Error(errorText);
+}
     const data = await res.json();
 
     // Remove typing indicator
