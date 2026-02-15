@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>ALMAS AI</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css)"/>
+<link href="[https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap)" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="[https://cdn.jsdelivr.net/npm/marked/marked.min.js](https://cdn.jsdelivr.net/npm/marked/marked.min.js)"></script>
+<link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css](https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css)">
+<script src="[https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js](https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js)"></script>
 
 <style>
 /* --- VARIABLES & RESET --- */
@@ -53,8 +53,13 @@ aside {
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border);
-  transition: transform 0.3s ease;
+  transition: margin-left 0.3s ease; /* Smooth Slide */
   z-index: 100;
+}
+
+/* Hidden State for Sidebar */
+aside.closed {
+  margin-left: -280px;
 }
 
 .brand {
@@ -155,6 +160,28 @@ main {
   background: radial-gradient(circle at 50% 0%, #1e2230 0%, #090a0f 60%);
 }
 
+/* Sidebar Toggle Button */
+.menu-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.menu-btn:hover {
+  background: var(--bg-surface-hover);
+}
+
 #chat {
   flex: 1;
   overflow-y: auto;
@@ -186,7 +213,7 @@ main {
   font-size: 16px;
 }
 
-/* --- UPDATED MESSAGES --- */
+/* --- MESSAGES --- */
 .msg {
   width: 100%;
   max-width: 768px;
@@ -196,7 +223,6 @@ main {
   animation: slideUp 0.3s ease;
 }
 
-/* User Message: Avatar on Right, Text Aligned Right */
 .msg.user {
   flex-direction: row-reverse;
 }
@@ -204,7 +230,6 @@ main {
 .msg.user .content {
   text-align: right;
 }
-/* Ensure code blocks stay left aligned for readability even in user msg */
 .msg.user .content pre, 
 .msg.user .content ul, 
 .msg.user .content ol {
@@ -212,7 +237,6 @@ main {
     direction: ltr;
 }
 
-/* Bot Message: Standard Left Alignment */
 .msg.bot {
   flex-direction: row;
 }
@@ -308,7 +332,7 @@ main {
   height: 40px;
   border-radius: 10px;
   border: none;
-  background: var(--text-main); /* White/Grey */
+  background: var(--text-main); 
   color: var(--bg-deep);
   cursor: pointer;
   display: flex;
@@ -363,13 +387,15 @@ main {
   <button class="new-chat-btn" onclick="newChat()">
     <i class="fas fa-plus"></i> New Chat
   </button>
-  <div id="history">
-    </div>
+  <div id="history"></div>
 </aside>
 
 <main>
-  <div id="chat">
-    </div>
+  <button class="menu-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <div id="chat"></div>
 
   <div class="input-area">
     <div class="input-container">
@@ -388,21 +414,23 @@ main {
 </main>
 
 <script>
-/* Config: Point this to your actual backend. 
-   If running locally, keep localhost:3000 
-*/
-const API = "https://almas-fullstack.onrender.com/api";
+/* Config: Point this to your actual backend. */
+const API = "[https://almas-fullstack.onrender.com/api](https://almas-fullstack.onrender.com/api)";
 
 let currentChat = null;
 let isBusy = false;
 
 window.onload = () => {
   loadHistory();
-  // Don't auto-create new chat, wait for user or load last
   newChat(); 
 };
 
 // --- LOGIC ---
+
+// Toggle Sidebar Function
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("closed");
+}
 
 async function loadHistory() {
   try {
@@ -448,8 +476,6 @@ async function newChat() {
       <p>How can I help you today?</p>
     </div>
   `;
-  // Create the session on the server immediately or wait for first message
-  // Implementation depends on your backend, but let's assume we create it now:
   const res = await fetch(API + "/new-chat", { method: "POST" });
   const data = await res.json();
   currentChat = data.chatId;
@@ -458,12 +484,12 @@ async function newChat() {
 
 async function loadChat(id) {
   currentChat = id;
-  loadHistory(); // Refresh active state
+  loadHistory(); 
   
   const res = await fetch(API + "/chat/" + id);
   const data = await res.json();
   const chatDiv = document.getElementById("chat");
-  chatDiv.innerHTML = ""; // clear welcome screen
+  chatDiv.innerHTML = ""; 
   
   data.messages.forEach(m => appendMessage(m.role, m.content));
 }
@@ -476,14 +502,12 @@ async function send() {
   isBusy = true;
   document.getElementById("sendBtn").disabled = true;
   
-  // Clear welcome screen if it exists
   const welcome = document.querySelector(".welcome-screen");
   if(welcome) welcome.remove();
 
   appendMessage("user", text);
   input.value = "";
 
-  // Add placeholder for bot response
   const typingId = appendTyping();
 
   try {
@@ -493,49 +517,48 @@ async function send() {
       body: JSON.stringify({ chatId: currentChat, message: text })
     });
     
-if (!res.ok) {
-  const errorText = await res.text();
-  throw new Error(errorText);
-}
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText);
+    }
     const data = await res.json();
 
-    // Remove typing indicator
     const typingDiv = document.getElementById(typingId);
     if(typingDiv) typingDiv.remove();
 
-    // Stream the real response
     streamMessage(data.reply);
-    
-    // Refresh history titles
     loadHistory();
 
   } catch (err) {
     console.error(err);
-    document.getElementById(typingId).innerHTML = `<div style="color:red">Error connecting to Almas.</div>`;
+    const tDiv = document.getElementById(typingId);
+    if(tDiv) tDiv.innerHTML = `<div style="color:red">Error connecting to Almas.</div>`;
   }
   
   isBusy = false;
   document.getElementById("sendBtn").disabled = false;
-  // Keep focus on input
   setTimeout(() => input.focus(), 100);
 }
 
 function appendMessage(role, text) {
   const chat = document.getElementById("chat");
   const div = document.createElement("div");
-  // UPDATED: added 'role' to class list for specific alignment
-  div.className = `msg ${role}`; 
+
+  // Check for 'assistant' OR 'bot'
+  const isBot = (role === 'bot' || role === 'assistant');
+  
+  div.className = `msg ${isBot ? 'bot' : 'user'}`;
   div.innerHTML = `
-    <div class="avatar ${role === 'user' ? 'user-avatar' : 'bot-avatar'}">
-      <i class="fas ${role === 'user' ? 'fa-user' : 'fa-sparkles'}"></i>
+    <div class="avatar ${isBot ? 'bot-avatar' : 'user-avatar'}">
+      <i class="fas ${isBot ? 'fa-sparkles' : 'fa-user'}"></i>
     </div>
     <div class="content">
-      ${role === 'bot' ? marked.parse(text) : text}
+      ${isBot ? marked.parse(text) : text} 
     </div>
   `;
   chat.appendChild(div);
   
-  // Highlight code blocks
+  // Re-highlight code blocks
   div.querySelectorAll("pre code").forEach(block => hljs.highlightElement(block));
   
   chat.scrollTop = chat.scrollHeight;
@@ -545,7 +568,6 @@ function appendTyping() {
   const chat = document.getElementById("chat");
   const id = "typing-" + Date.now();
   const div = document.createElement("div");
-  // UPDATED: Added 'bot' class
   div.className = "msg bot"; 
   div.id = id;
   div.innerHTML = `
@@ -563,15 +585,9 @@ function appendTyping() {
   return id;
 }
 
-/* Smoother streaming effect 
-   Instead of re-parsing Markdown on every character (which glitches),
-   we parse chunks or just simple text, then finalize.
-   For simplicity and stability, we will simulate typing then render Markdown.
-*/
 function streamMessage(fullText) {
   const chat = document.getElementById("chat");
   const div = document.createElement("div");
-  // UPDATED: Added 'bot' class
   div.className = "msg bot"; 
   div.innerHTML = `
     <div class="avatar bot-avatar"><i class="fas fa-sparkles"></i></div>
@@ -582,15 +598,13 @@ function streamMessage(fullText) {
   const contentDiv = div.querySelector(".content");
   let index = 0;
   
-  // Speed up the typing slightly
   const interval = setInterval(() => {
-    contentDiv.innerText = fullText.slice(0, index); // Plain text while typing
+    contentDiv.innerText = fullText.slice(0, index); 
     chat.scrollTop = chat.scrollHeight;
-    index += 5; // Type 5 chars at a time
+    index += 5; 
     
     if (index > fullText.length) {
       clearInterval(interval);
-      // Final render with Markdown
       contentDiv.innerHTML = marked.parse(fullText);
       div.querySelectorAll("pre code").forEach(block => hljs.highlightElement(block));
       chat.scrollTop = chat.scrollHeight;
