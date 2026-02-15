@@ -4,7 +4,6 @@ const cors = require("cors");
 const crypto = require("crypto");
 const fs = require("fs/promises");
 const path = require("path");
-const fetch = require("node-fetch"); // ✅ Added
 
 const app = express();
 const PORT = process.env.PORT || 3000; // ✅ Fixed for Render
