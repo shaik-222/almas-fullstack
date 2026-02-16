@@ -4,6 +4,8 @@ const cors = require("cors");
 const crypto = require("crypto");
 const fs = require("fs/promises");
 const path = require("path");
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 const app = express();
 const PORT = process.env.PORT || 3000; // ✅ Fixed for Render
@@ -135,8 +137,11 @@ async function callGroq(messages, config) {
       }
     );
 
-    if (!response.ok)
-      throw new Error(`Groq API Error: ${response.statusText}`);
+     if (!response.ok) {
+  const errText = await response.text();
+  throw new Error(`Groq API Error: ${errText}`);
+}
+
 
     const data = await response.json();
     return data.choices?.[0]?.message?.content || "";
