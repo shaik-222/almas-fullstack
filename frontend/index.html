@@ -433,10 +433,8 @@ const API = "https://almas-fullstack.onrender.com/api";
 let currentChat = null;
 let isBusy = false;
 
-window.onload = () => {
-  loadHistory();
-  // Don't auto-create new chat, wait for user or load last
-  newChat(); 
+window.onload = async () => {
+  await loadHistory();
 };
 
 // --- LOGIC ---
