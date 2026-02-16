@@ -555,19 +555,27 @@ if (!res.ok) {
   setTimeout(() => input.focus(), 100);
 }
 
-function appendMessage(role, text) {
+  function appendMessage(role, text) {
   const chat = document.getElementById("chat");
   const div = document.createElement("div");
-  // UPDATED: added 'role' to class list for specific alignment
-  div.className = `msg ${role}`; 
-  div.innerHTML = `
-    <div class="avatar ${role === 'user' ? 'user-avatar' : 'bot-avatar'}">
-      <i class="fas ${role === 'user' ? 'fa-user' : 'fa-sparkles'}"></i>
-    </div>
-    <div class="content">
-      ${role === 'bot' ? marked.parse(text) : text}
-    </div>
-  `;
+
+  // 🔥 ADD THIS LINE (Fix 2)
+  if (role === "assistant") role = "bot";
+
+  div.className = `msg ${role}`;
+ const contentHTML = role === "bot"
+  ? marked.parse(text)
+  : text.replace(/\n/g, "<br>");
+
+div.innerHTML = `
+  <div class="avatar ${role === 'user' ? 'user-avatar' : 'bot-avatar'}">
+    <i class="fas ${role === 'user' ? 'fa-user' : 'fa-sparkles'}"></i>
+  </div>
+  <div class="content">
+    ${contentHTML}
+  </div>
+`;
+
   chat.appendChild(div);
   
   // Highlight code blocks
