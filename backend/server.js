@@ -25,6 +25,8 @@ app.use(express.static("public"));
 // app.use(express.static(__dirname));
 
 const apiKey = process.env.GROQ_API_KEY;
+console.log("API KEY EXISTS:", !!apiKey);
+
 if (!apiKey) {
   console.error("❌ GROQ_API_KEY missing");
   process.exit(1);
@@ -150,6 +152,52 @@ async function callGroq(messages, config) {
     return "⚠️ I'm having trouble connecting right now.";
   }
 }
+/* ================= TITLE GENERATION ================= */
+
+async function generateChatTitle(messages) {
+  try {
+    const meaningfulText = messages
+      .filter(m => m.role === "user")
+      .map(m => m.content)
+      .join("\n");
+
+    if (!meaningfulText) return "New Chat";
+
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages: [
+            {
+              role: "system",
+              content:
+                "Generate a short 3-6 word conversation title. No punctuation. No quotes."
+            },
+            {
+              role: "user",
+              content: meaningfulText
+            }
+          ],
+          temperature: 0.3,
+          max_tokens: 20
+        })
+      }
+    );
+
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content?.trim() || "New Chat";
+  } catch (e) {
+    console.error("Title generation error:", e);
+    return "New Chat";
+  }
+}
+
 
 /* ================= MODE DETECTION ================= */
 
@@ -245,6 +293,23 @@ app.post("/api/chat", async (req, res) => {
 
   chat.messages.push({ role: "assistant", content: aiReply });
   chat.memory = message;
+ /* ===== AUTO TITLE GENERATION ===== */
+
+const ignored = ["hi", "hello", "hey", "ok", "thanks"];
+
+const validUserMessages = chat.messages.filter(
+  m =>
+    m.role === "user" &&
+    m.content.length > 10 &&
+    !ignored.includes(m.content.toLowerCase())
+);
+
+if (
+  (!chat.title || chat.title === "New Chat") &&
+  validUserMessages.length >= 1
+) {
+  chat.title = await generateChatTitle(validUserMessages);
+}
 
   await saveChat(chatId, chat);
 
