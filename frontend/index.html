@@ -497,9 +497,7 @@ async function newChat() {
   `;
   // Create the session on the server immediately or wait for first message
   // Implementation depends on your backend, but let's assume we create it now:
-  const res = await fetch(API + "/new-chat", { method: "POST" });
-  const data = await res.json();
-  currentChat = data.chatId;
+  
   loadHistory();
 }
 
@@ -534,6 +532,13 @@ async function send() {
   const typingId = appendTyping();
 
   try {
+    // 🔥 If first message → create chat
+ if (!currentChat) {
+  const newRes = await fetch(API + "/new-chat", { method: "POST" });
+  const newData = await newRes.json();
+  currentChat = newData.chatId;
+ }
+
     const res = await fetch(API + "/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
