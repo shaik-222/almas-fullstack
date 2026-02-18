@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -425,6 +426,11 @@ main {
 </main>
 
 <script>
+function saveChatToLocal() {
+  const chatDiv = document.getElementById("chat");
+  localStorage.setItem("chatHTML", chatDiv.innerHTML);
+}
+
 /* Config: Point this to your actual backend. 
    If running locally, keep localhost:3000 
 */
@@ -435,6 +441,12 @@ let isBusy = false;
 
 window.onload = async () => {
   await loadHistory();
+
+  // 🔥 Load saved chat after refresh
+  const savedChat = localStorage.getItem("chatHTML");
+  if (savedChat) {
+    document.getElementById("chat").innerHTML = savedChat;
+  }
 };
 
 // --- LOGIC ---
@@ -582,6 +594,7 @@ div.innerHTML = `
   div.querySelectorAll("pre code").forEach(block => hljs.highlightElement(block));
   
   chat.scrollTop = chat.scrollHeight;
+saveChatToLocal();
 }
 
 function appendTyping() {
@@ -635,6 +648,8 @@ function streamMessage(fullText) {
       clearInterval(interval);
       // Final render with Markdown
       contentDiv.innerHTML = marked.parse(fullText);
+      saveChatToLocal();
+
       div.querySelectorAll("pre code").forEach(block => hljs.highlightElement(block));
       chat.scrollTop = chat.scrollHeight;
     }
