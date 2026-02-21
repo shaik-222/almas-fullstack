@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ALMAS AI</title>
+<title>Kanna AI</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -396,7 +396,7 @@ main {
 
 <aside id="sidebar">
   <div class="brand">
-    <i class="fas fa-sparkles"></i> ALMAS AI
+    <i class="fas fa-sparkles"></i> Kanna AI
   </div>
   <button class="new-chat-btn" onclick="newChat()">
     <i class="fas fa-plus"></i> New Chat
@@ -414,7 +414,7 @@ main {
       <input 
         id="input" 
         type="text" 
-        placeholder="Ask Almas anything..." 
+        placeholder="Ask Kanna anything..." 
         autocomplete="off"
         onkeydown="if(event.key==='Enter') send()"
       />
@@ -491,7 +491,7 @@ async function newChat() {
   currentChat = null;
   document.getElementById("chat").innerHTML = `
     <div class="welcome-screen">
-      <h1>Hello, I am Almas.</h1>
+      <h1>Hello, I am Kanna.</h1>
       <p>How can I help you today?</p>
     </div>
   `;
@@ -563,7 +563,7 @@ if (!res.ok) {
 
   } catch (err) {
     console.error(err);
-    document.getElementById(typingId).innerHTML = `<div style="color:red">Error connecting to Almas.</div>`;
+    document.getElementById(typingId).innerHTML = `<div style="color:red">Error connecting to kanna.</div>`;
   }
   
   isBusy = false;

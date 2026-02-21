@@ -80,7 +80,7 @@ async function createChat() {
     title: "New Chat",
     createdAt: Date.now(),
     messages: [
-      { role: "assistant", content: "Hey 👋 I’m Almas. How can I help you today?" }
+      { role: "assistant", content: "Hey 👋 I’m Kanna. How can I help you today?" }
     ],
     memory: "",
     forcedMode: null
@@ -97,25 +97,25 @@ const MODES = {
     temperature: 0.8,
     max_tokens: 500,
     systemPrompt:
-      "You are Almas, a friendly AI created by Hussain. Be natural and conversational."
+      "You are Kanna, a friendly AI created by Hussain. Be natural and conversational."
   },
   technical: {
     temperature: 0.2,
     max_tokens: 2000,
     systemPrompt:
-      "You are Almas, a senior software engineer. Give optimized, correct answers with code blocks."
+      "You are Kanna, a senior software engineer. Give optimized, correct answers with code blocks."
   },
   concise: {
     temperature: 0.5,
     max_tokens: 150,
     systemPrompt:
-      "You are Almas. Give very short and clear answers."
+      "You are Kanna. Give very short and clear answers."
   },
   exam: {
     temperature: 0.3,
     max_tokens: 1200,
     systemPrompt:
-      "You are Almas. Answer in structured exam format with headings and bullet points."
+      "You are Kanna. Answer in structured exam format with headings and bullet points."
   }
 };
 
@@ -226,7 +226,7 @@ function detectMode(message) {
 /* ================= ROUTES ================= */
 // Root route (for Render health check)
 app.get("/", (req, res) => {
-  res.send("🚀 Almas AI Backend is Live on Render!");
+  res.send("🚀 Kanna AI Backend is Live on Render!");
 });
 
 
@@ -323,5 +323,5 @@ if (
 /* ================= START SERVER ================= */
 
 app.listen(PORT, () => {
-  console.log(`✅ Almas server running on port ${PORT}`);
+  console.log(`✅ Kanna server running on port ${PORT}`);
 });
